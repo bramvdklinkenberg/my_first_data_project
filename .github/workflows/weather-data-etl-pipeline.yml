@@ -1,0 +1,48 @@
+name: Extract, Transform and Load API Weather Data to Azure PostgreSQL
+
+on:
+  workflow_dispatch:
+
+env:
+  AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+  AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+  AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+  AZURE_STORAGE_ACCOUNT_NAME: ${{ secrets.AZURE_STORAGE_ACCOUNT_NAME }}
+  AZURE_STORAGE_CONTAINER_NAME: 'livingroom'
+  CSV_FILENAME: 'humidity_livingroom.csv'
+  AZURE_POSTGRESQL_HOSTNAME: ${{ secrets.AZURE_POSTGRESQL_HOSTNAME }}
+  AZURE_POSTGRESQL_ADMIN: ${{ secrets.AZURE_POSTGRESQL_ADMIN }}
+  AZURE_POSTGRESQL_ADMIN_PASSWORD: ${{ secrets.AZURE_POSTGRESQL_ADMIN_PASSWORD }}
+  AZURE_POSTGRESQL_DBNAME: 'data-project'
+  WEATHER_API_BASE_URL: 'https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/'
+  WEATHER_API_PARAMETERS: 'assendelft/2022-12-16/2022-12-19?unitGroup=metric&include=hours&contentType=json'
+  WEATHER_API_KEY: ${{ secrets.WEATHER_API_KEY }}
+
+jobs:
+  weather_data:
+    runs-on: ubuntu-latest
+    name: Extract, Transform and Load the Weather Data
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Install requirements
+        run: pip install -r ./requirements.txt
+      - name: Extract, Transform and Load the Weather Data
+        run: ./etl/weather_data_etl_pipeline.py
+        env:
+          AZURE_CLIENT_ID: ${{ env.AZURE_CLIENT_ID }}
+          AZURE_CLIENT_SECRET: ${{ env.AZURE_CLIENT_SECRET }}
+          AZURE_TENANT_ID: ${{ env.AZURE_TENANT_ID }}
+          AZURE_RESOURCE_GROUP: ${{ env.AZURE_RESOURCE_GROUP }}
+          AZURE_POSTGRESQL_HOSTNAME: ${{ env.AZURE_POSTGRESQL_HOSTNAME }}
+          AZURE_POSTGRESQL_ADMIN: ${{ env.AZURE_POSTGRESQL_ADMIN }}
+          AZURE_POSTGRESQL_ADMIN_PASSWORD: ${{ env.AZURE_POSTGRESQL_ADMIN_PASSWORD }}
+          AZURE_POSTGRESQL_DBNAME: ${{ env.AZURE_POSTGRESQL_DBNAME }}
+          DB_TABLE_NAME: ${{ github.job }}
+          WEATHER_API_BASE_URL: ${{ env.WEATHER_API_BASE_URL }}
+          WEATHER_API_PARAMETERS: ${{ env.WEATHER_API_PARAMETERS }}
+          WEATHER_API_KEY: ${{ env.WEATHER_API_KEY }}

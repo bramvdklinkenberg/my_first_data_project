@@ -1,0 +1,30 @@
+name: Upload Humidity CSV To Azure Storage Account
+
+on:
+  workflow_dispatch:
+
+env:
+  AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+  AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+  AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+  AZURE_RESOURCE_GROUP: 'data-project-humidity-home-rg'
+  AZURE_STORAGE_ACCOUNT_NAME: ${{ secrets.AZURE_STORAGE_ACCOUNT_NAME }}
+  AZURE_STORAGE_CONTAINER_NAME: 'humiditydata'
+  CSV_FILENAME: 'humidity_livingroom.csv'
+
+jobs:
+  upload_humidity_csv:
+    runs-on: ubuntu-latest
+    name: Upload Humidity CSV To Azure Storage Account
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Upload Humidity CSV To Azure Storage Account
+        run: ./scripts/bash/upload_csv.sh
+        env:
+          AZURE_CLIENT_ID: ${{ env.AZURE_CLIENT_ID }}
+          AZURE_CLIENT_SECRET: ${{ env.AZURE_CLIENT_SECRET }}
+          AZURE_TENANT_ID: ${{ env.AZURE_TENANT_ID }}
+          AZURE_STORAGE_ACCOUNT_NAME: ${{ env.AZURE_STORAGE_ACCOUNT_NAME }}
+          AZURE_STORAGE_CONTAINER_NAME: ${{ env.AZURE_STORAGE_CONTAINER_NAME }}
+          CSV_FILENAME: ${{ env.CSV_FILENAME }}
