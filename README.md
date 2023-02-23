@@ -20,6 +20,8 @@ This is a data project that focuses on uploading, transforming, and loading data
 
 Once I get this nicely up and running I will start working on different setups, using the same data, but using tools like Airflow, Mage, Azure Data Factory, Azure Synapse, Azure Databricks, PySpark etc. This way I can get more hands-on experience with different tools and technologies.
 
+I have also created a "My first data engineering project from scratch" blog post on my website. You can find it [here](https://bramvandenklinkenberg.com/2023/02/22/my-first-data-engineering-project-from-scratch/).
+
 ## Prerequisites
 
 Before we can run the pipelines we need to have some requirements in place:
